@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProductMicroservice.Model;
+using ProductMicroservice.RabbitMQ;
 using ProductMicroservice.Services.Interface;
 
 namespace ProductMicroservice.Controllers
@@ -10,9 +11,11 @@ namespace ProductMicroservice.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductService productService;
-        public ProductsController(IProductService _productService)
+        private readonly IRabitMQProducer _rabitMQProducer;
+        public ProductsController(IProductService _productService, IRabitMQProducer rabitMQProducer)
         {
             productService = _productService;
+            _rabitMQProducer = rabitMQProducer;
         }
         [HttpGet]
         public IEnumerable<Product> ProductList()
@@ -29,7 +32,9 @@ namespace ProductMicroservice.Controllers
         [HttpPost]
         public Product AddProduct(Product product)
         {
-            return productService.AddProduct(product);
+            var productData = productService.AddProduct(product);
+            _rabitMQProducer.SendProductMessage(productData);
+            return productData;
         }
         [HttpPut]
         public Product UpdateProduct(Product product)

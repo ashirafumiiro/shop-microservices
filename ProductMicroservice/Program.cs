@@ -1,4 +1,5 @@
 using ProductMicroservice.Data;
+using ProductMicroservice.RabbitMQ;
 using ProductMicroservice.Services;
 using ProductMicroservice.Services.Interface;
 
@@ -6,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IRabitMQProducer, RabitMQProducer>();
 builder.Services.AddDbContext<DbContextClass>();
 
 

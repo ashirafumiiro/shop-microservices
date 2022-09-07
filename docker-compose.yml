@@ -6,7 +6,7 @@ services:
     context: ./ProductMicroservice
     dockerfile: Dockerfile
    environment:
-    - CONNECTIONSTRINGS__DEFAULTCONNECTION=Data Source=172.29.0.1,1433;Initial Catalog=ProductServiceDB;User Id=sa;Password=******
+    - CONNECTIONSTRINGS__DEFAULTCONNECTION=Data Source=172.21.224.1,1433;Initial Catalog=ProductServiceDB;User Id=sa;Password=****
    ports:
     - "4201:80"
   UserService:
@@ -15,6 +15,15 @@ services:
     context: ./UserMicroservice
     dockerfile: Dockerfile
    environment:
-    - CONNECTIONSTRINGS__DEFAULTCONNECTION=Data Source=172.29.0.1,1433;Initial Catalog=UserServiceDB;User Id=sa;Password=******
+    - CONNECTIONSTRINGS__DEFAULTCONNECTION=Data Source=172.21.224.1,1433;Initial Catalog=UserServiceDB;User Id=sa;Password=****
    ports:
-    - "4202:80"
+    - "4203:80"
+  rabbitmq:
+   image: rabbitmq:3-management
+   container_name: 'rabbitmq'
+   ports:
+    - "5672:5672"
+    - "15672:15672"
+   volumes:
+    - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+    - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
